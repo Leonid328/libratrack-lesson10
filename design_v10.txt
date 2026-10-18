@@ -1,0 +1,16 @@
+Lesson 10 architecture
+
+JWT is stored in an HttpOnly cookie, not localStorage. A stolen XSS payload can read
+localStorage and replay the token. HttpOnly cookies are not visible to page JavaScript.
+
+Templates use html/template exclusively (web/templates.go ParseFS). template.HTML is not
+used on user or database fields. Book titles, ISBNs, names are interpolated as strings
+so they are autoescaped.
+
+Static CSS and HTML templates are compiled into the binary with go:embed. The process
+does not read ./web from disk at runtime.
+
+Isolation check:
+  CGO_ENABLED=0 go build -o libratrack ./cmd/api
+  copy only the binary into /tmp/verify_libratrack
+  DATABASE_URL still required for Postgres; templates and CSS load from embed.

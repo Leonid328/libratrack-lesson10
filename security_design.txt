@@ -1,0 +1,14 @@
+LibraTrack roles: reader, librarian, admin.
+
+Access matrix
+- Public: POST /api/v1/auth/register, POST /api/v1/auth/login, GET /api/v1/books, catalog HTML
+- Authenticated: GET /api/v1/me/loans
+- Staff (librarian, admin): HTMX DELETE /web/books/:id
+- Admin: GET /api/v1/users, PUT /api/v1/users/:id/role
+
+Theme 8 checker still exercises unauthenticated book/author/category CRUD so those JSON
+routes stay public for the automated lab. Staff-only mutations for the web UI use cookies.
+
+DTOs: RegisterRequest has email+password only. User.PasswordHash has json:"-".
+Login failures always return "invalid credentials" (no user enumeration).
+Logging middleware redacts password. Auth/RBAC use AbortWithStatusJSON.
